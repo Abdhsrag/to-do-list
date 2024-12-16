@@ -1,0 +1,268 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: cursive;
+}
+
+main{
+  width: auto;
+  height: 100%;
+  overflow: hidden;
+  background-image: url(../media/lifestyle-summer-scene-with-cartoon-design.jpg);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+main h1{
+  color: white;
+  font-size: 2.75rem;
+  margin-top: 4rem;
+  font-weight: 400;
+  font-family: "Pacifico", cursive;
+}
+
+main h1 span{
+  font-family: "Rubik Moonrocks", sans-serif;
+}
+
+.container{
+  width: 80%;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4rem;
+  background-color: rgba(35, 35, 35, 0.4);
+  border: 1px solid rgba(235, 235, 235, 0.1);
+  border-radius: 1rem;
+  margin-bottom: 4rem;
+}
+
+#taskForm{
+  padding: 3rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+}
+
+#taskInput{
+  width: 70%;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  border: none;
+}
+#taskInput:focus{
+  outline: none;
+}
+
+#addButton{
+  background-color: #118B50;
+  color: white;
+  border: none;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  cursor: pointer;
+}
+
+#addButton:hover{
+  background-color: #0d6e3b;
+}
+
+#clearButton{
+  background-color: #FA4032;
+  color: white;
+  border: none;
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  cursor: pointer;
+}
+
+#clearButton:hover{
+  background-color: #d32b1d;
+}
+
+#taskList{
+  padding: 1rem 0;
+  width: 100%;
+  height: 60vh;
+  color: white;
+  overflow-y: auto;
+  scrollbar-color: #91c2aa rgba(235, 235, 235, 0.5);
+  scrollbar-width: thin;
+}
+
+#taskList li{
+  width: 80%;
+  background-color: rgba(235, 235, 235, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7D0A0A;
+  font-size: 1.5rem;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+  font-weight: 500;
+  margin: auto;
+  margin-bottom: 1rem;
+}
+
+.floating {
+  transform: translateZ(0) rotateZ(1deg); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+}
+
+#taskList li span {
+  flex-grow: 1;
+  margin: .75rem;
+}
+
+#taskList li button {
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  cursor: pointer;
+  border: none;
+}
+
+#taskList li input{
+  margin: 0 .75rem;
+  border: none;
+  outline: none;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+#deleteButton{
+  background-color: #FA4032;
+  color: white;
+}
+
+#deleteButton:hover{
+  background-color: #af2f26;
+}
+
+#updateButton{
+  background-color: #FFB200;
+  color: black;
+  margin-left: .5rem;
+}
+
+#updateButton:hover{
+  background-color: #ce9102;
+}
+
+footer{
+  display: flex;
+  justify-content: center;
+  padding: .90rem;
+  background-color:#49583C;
+}
+footer p {
+  color: gray;
+}
+
+.popUp {
+  width: 50%;
+  height: 50%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: -100%; /* Start off-screen at the top */
+  left: 25%;
+  z-index: 100;
+  color: white;
+  border-radius: .5rem;
+  opacity: 0;
+  transition: opacity 0.7s ease-in-out;
+}
+
+@keyframes popUpAnimation {
+  0% {
+      opacity: 0;
+      top: -100%; /* Start from above */
+  }
+  25%{
+    opacity: 0.25;
+    top: 5%; /* Middle */
+  }
+  50% {
+      opacity: .5;
+      top: 15%; /* Middle */
+  }
+  75% {
+      opacity: 0.75;
+      top: 20%; /* Middle */
+  }
+  100% {
+      opacity: 1;
+      top: 25%; /* End at the center */
+  }
+}
+
+.popUp.show {
+  opacity: 1;
+  animation: popUpAnimation 0.4s forwards;
+}
+
+.popUp h2{
+  padding-bottom: 1rem;
+}
+
+.popUp p{
+  padding-bottom: 1rem;
+}
+
+.popUpImg{
+  width: 10rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 280px) and (max-width: 620px) {
+  #taskList li{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: .5rem;
+  }
+  #taskList li button{
+    margin-left: 0;
+    width: 60%;
+  }
+  #taskInput{
+    width: 100%;
+  }
+  #taskForm{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .popUp{
+    width: 80%;
+    height: 80%;
+    left: 10%;
+    top: 100%;
+  }
+  .popUp h2{
+    padding-bottom: .75rem;
+  }
+  .popUp p{
+    padding-bottom: .75rem;
+  }
+  .popUpImg{
+    width: 7rem;
+    padding-bottom: .75rem;
+  }
+  footer{
+    text-align: center;
+  }
+}

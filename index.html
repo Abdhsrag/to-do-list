@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>to do list</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Pacifico&family=Playwrite+NL+Guides&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Pacifico&family=Playwrite+NL+Guides&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Rubik+Moonrocks&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style/style.mini.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Your Big <span>Adventure</span> Little <span>Helper</span></h1>
+      <div class="container">
+        <form id="taskForm">
+          <input
+            type="text"
+            id="taskInput"
+            placeholder="Add a new task"
+            required
+          />
+          <button type="submit" id="addButton">Add Task</button>
+          <button type="button" id="clearButton">Clear Tasks</button>
+        </form>
+          <ul id="taskList"></ul>
+      </div>
+      <div id="addPopUp" class="popUp">
+        <img src="./media/Designer.png" alt="smiley face" loading="lazy" class="popUpImg">
+        <h2>Your task has been added</h2>
+        <p>you're one step closer to your goal</p>
+      </div>
+      <div id="deletePopUp" class="popUp">
+        <img src="./media/Designer.png" alt="smiley face" loading="lazy" class="popUpImg">
+        <h2>Your task has been deleted</h2>
+        <p>good job on finishing your task</p>
+      </div>
+      <div id="updatePopUp" class="popUp">
+        <img src="./media/Designer.png" alt="smiley face" loading="lazy" class="popUpImg">
+        <h2>Your task has been updated</h2>
+      </div>
+      <div id="completePopUp" class="popUp">  
+        <img src="./media/Designer.png" alt="smiley face" loading="lazy" class="popUpImg">
+        <h2>Your task has been completed</h2>
+        <p>great job keep going and never back down</p>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; 2024 Your Big Adventure Little Helper. All rights reserved.</p>
+    </footer>
+
+    <script src="./script/script.mini.js" defer></script>
+  </body>
+</html>
