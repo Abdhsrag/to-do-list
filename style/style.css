@@ -153,6 +153,16 @@ main h1 span{
   margin-left: .5rem;
 }
 
+#saveButton{
+  background-color: #0d6e3b;
+  color: white;
+  margin-left: .5rem;
+}
+
+#saveButton:hover{
+  background-color: #0c5834;
+}
+
 #updateButton:hover{
   background-color: #ce9102;
 }

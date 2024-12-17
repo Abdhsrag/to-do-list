@@ -1,155 +1,172 @@
-const newTask = document.getElementById("taskInput");
-const taskList = document.getElementById("taskList");
-const addButton = document.getElementById("addButton");
-const clearButton = document.getElementById("clearButton");
+class Task {
+  constructor(text, completed = false) {
+    this.text = text;
+    this.completed = completed;
+  }
 
-// Popups
-const addPopUp = document.getElementById("addPopUp");
-const deletePopUp = document.getElementById("deletePopUp");
-const updatePopUp = document.getElementById("updatePopUp");
-const completePopUp = document.getElementById("completePopUp");
+  toggleCompletion() {
+    this.completed = !this.completed;
+  }
+}
 
-// Function to save tasks to localStorage
-function saveTasks() {
-    const tasks = [];
-    const listItems = taskList.getElementsByTagName("li");
-    for (let item of listItems) {
-        const taskText = item.getElementsByTagName("span")[0].innerText;
-        const isChecked = item.getElementsByTagName("input")[0].checked;
-        tasks.push({ text: taskText, completed: isChecked });
+class TaskManager {
+  constructor() {
+    this.tasks = [];
+    this.taskListElement = document.getElementById("taskList");
+    this.newTaskInput = document.getElementById("taskInput");
+    this.addButton = document.getElementById("addButton");
+    this.clearButton = document.getElementById("clearButton");
+    this.addPopUp = document.getElementById("addPopUp");
+    this.deletePopUp = document.getElementById("deletePopUp");
+    this.updatePopUp = document.getElementById("updatePopUp");
+    this.completePopUp = document.getElementById("completePopUp");
+    this.clearPopUp = document.getElementById("clearPopUp"); // Added clearPopUp
+
+    this.loadTasks();
+    this.addButton.addEventListener("click", () => this.addTask());
+    this.clearButton.addEventListener("click", () => this.clearTasks());
+  }
+
+  addTask() {
+    const taskText = this.newTaskInput.value;
+    if (taskText !== "") {
+      const newTask = new Task(taskText);
+      this.tasks.push(newTask);
+      this.addTaskToList(newTask);
+      this.newTaskInput.value = ""; // Clear the input field
+      this.showPopup(this.addPopUp);
+      setTimeout(() => this.addPopUp.classList.remove("show"), 2000);
+      this.saveTasks();
     }
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+  }
 
-// Function to load tasks from localStorage
-function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.forEach((task) => {
-        addTaskToList(task.text, task.completed);
-    });
-}
-
-// Function to add a task to the list
-function addTaskToList(taskText, isCompleted) {
+  addTaskToList(task) {
     const listItem = document.createElement("li");
 
     const check = document.createElement("input");
     check.type = "checkbox";
-    check.checked = isCompleted;
+    check.checked = task.completed;
     listItem.appendChild(check);
 
     const taskSpan = document.createElement("span");
-    taskSpan.innerText = taskText;
+    taskSpan.innerText = task.text;
     listItem.appendChild(taskSpan);
 
     // Set initial styles based on completion status
-    taskSpan.style.color = isCompleted ? "#118B50" : "#7D0A0A";
-    taskSpan.style.textDecoration = isCompleted ? "line-through" : "none";
-        // Add hover effect
-        listItem.addEventListener("mouseover", () => {
-            listItem.style.backgroundColor = "#f0f0f0"; // Change background color on hover
-            listItem.classList.add("floating");
-        });
-    
-        listItem.addEventListener("mouseout", () => {
-            listItem.style.backgroundColor = ""; // Reset background color when not hovering
-            listItem.classList.remove("floating");
-        });
+    this.updateTaskStyle(taskSpan, task.completed);
 
-    // Add color change logic
-    check.addEventListener("change", () => {
-        taskSpan.style.color = check.checked ? "#118B50" : "#7D0A0A";
-        taskSpan.style.textDecoration = check.checked ? "line-through" : "none";
-        if (check.checked) {
-            showPopup(completePopUp); 
-            setTimeout(() => completePopUp.classList.remove('show'), 2000); 
-        }
-        saveTasks();
+    // Add hover effect
+    listItem.addEventListener("mouseover", () => {
+      listItem.style.backgroundColor = "#f0f0f0"; // Change background color on hover
+      listItem.classList.add("floating");
     });
 
-    // Add delete button logic
-    const deleteButton = document.createElement("button");
-    deleteButton.setAttribute("id", "deleteButton");
-    deleteButton.innerText = "Delete";
-    listItem.appendChild(deleteButton);
+    listItem.addEventListener("mouseout", () => {
+      listItem.style.backgroundColor = ""; // Reset background color when not hovering
+      listItem.classList.remove("floating");
+    });
 
-    // Add delete button functionality
+    // Add checkbox change logic
+    check.addEventListener("change", () => {
+      task.toggleCompletion();
+      this.updateTaskStyle(taskSpan, task.completed);
+      if (task.completed) {
+        this.showPopup(this.completePopUp);
+        setTimeout(() => this.completePopUp.classList.remove("show"), 2000);
+      }
+      this.saveTasks();
+    });
+
+    // Add delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.innerText = "Delete";
+    deleteButton.setAttribute("id", "deleteButton");
+    listItem.appendChild(deleteButton);
     deleteButton.addEventListener("click", () => {
-        listItem.remove();
-        showPopup(deletePopUp); 
-        setTimeout(() => deletePopUp.classList.remove('show'), 2000); 
-        saveTasks();
+      this.deleteTask(task, listItem);
     });
 
     // Add update button
     const updateButton = document.createElement("button");
-    updateButton.setAttribute("id", "updateButton");
     updateButton.innerText = "Update";
+    updateButton.setAttribute("id", "updateButton");
     listItem.appendChild(updateButton);
-
-    // Add update button functionality
     updateButton.addEventListener("click", () => {
-        if (updateButton.innerText === "Update") {
-            const inputField = document.createElement("input");
-            inputField.type = "text";
-            inputField.value = taskSpan.innerText;
-            listItem.insertBefore(inputField, taskSpan);
-            listItem.removeChild(taskSpan);
-
-            // Create a new Save button
-            const saveButton = document.createElement("button");
-            saveButton.innerText = "Save";
-            saveButton.style.color = "#fff";
-            saveButton.style.backgroundColor = "#118B50";
-            saveButton.style.marginLeft = "0.5rem";
-            listItem.appendChild(saveButton);
-
-            // Hide the Update button
-            updateButton.style.display = "none";
-
-            // Save button functionality
-            saveButton.addEventListener("click", () => {
-                if (inputField.value !== "") {
-                    taskSpan.innerText = inputField.value;
-                    listItem.insertBefore(taskSpan, inputField);
-                    listItem.removeChild(inputField);
-                    updateButton.style.display = "inline"; 
-                    saveButton.remove(); 
-                    showPopup(updatePopUp);
-                    setTimeout(() => updatePopUp.classList.remove('show'), 2000); 
-                    saveTasks();
-                }
-            });
-        }
+      this.updateTask(task, taskSpan, updateButton, listItem);
     });
 
-    taskList.appendChild(listItem);
-}
+    this.taskListElement.appendChild(listItem);
+  }
 
-// Event listener for adding a new task
-addButton.addEventListener("click", () => {
-    if (newTask.value !== "") {
-        addTaskToList(newTask.value, false);
-        newTask.value = ""; // Clear the input field
-        showPopup(addPopUp); // Show add popup
-        setTimeout(() => addPopUp.classList.remove('show'), 2000); 
-        saveTasks();
+  updateTaskStyle(taskSpan, isCompleted) {
+    taskSpan.style.color = isCompleted ? "#118B50" : "#7D0A0A";
+    taskSpan.style.textDecoration = isCompleted ? "line-through" : "none";
+  }
+
+  deleteTask(task, listItem) {
+    this.tasks = this.tasks.filter((t) => t !== task);
+    listItem.remove();
+    this.showPopup(this.deletePopUp);
+    setTimeout(() => this.deletePopUp.classList.remove("show"), 2000);
+    this.saveTasks();
+  }
+
+  updateTask(task, taskSpan, updateButton, listItem) {
+    if (updateButton.innerText === "Update") {
+      const inputField = document.createElement("input");
+      inputField.type = "text";
+      inputField.value = taskSpan.innerText;
+      listItem.insertBefore(inputField, taskSpan);
+      listItem.removeChild(taskSpan);
+
+      const saveButton = document.createElement("button");
+      saveButton.innerText = "Save";
+      saveButton.setAttribute("id", "saveButton");
+      listItem.appendChild(saveButton);
+      updateButton.style.display = "none";
+
+      saveButton.addEventListener("click", () => {
+        if (inputField.value !== "") {
+          // Fixed taskSpan.innerText = inputField.value;
+          task.text = inputField.value; // Update task text
+          listItem.insertBefore(taskSpan, inputField);
+          listItem.removeChild(inputField);
+          updateButton.style.display = "inline"; // Show update button again
+          this.showPopup(this.updatePopUp);
+          setTimeout(() => this.updatePopUp.classList.remove("show"), 2000);
+          this.saveTasks();
+          saveButton.style.display = "none";
+        }
+      });
     }
-});
+  }
 
-// Event listener for clearing all tasks
-clearButton.addEventListener("click", () => {
-    taskList.innerHTML = ""; // Clear the task list
-    localStorage.removeItem("tasks"); // Clear tasks from localStorage
-});
+  clearTasks() {
+    this.tasks = [];
+    this.taskListElement.innerHTML = ""; // Clear the task list
+    this.showPopup(this.clearPopUp); // Show clear popup
+    setTimeout(() => this.clearPopUp.classList.remove("show"), 2000);
+    this.saveTasks();
+  }
 
-// Function to show popup with animation
-function showPopup(popup) {
-  popup.classList.remove('show'); 
-  void popup.offsetWidth; 
-  popup.classList.add('show'); 
+  saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(this.tasks));
+  }
+
+  loadTasks() {
+    const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    savedTasks.forEach((taskData) => {
+      const task = new Task(taskData.text, taskData.completed);
+      this.tasks.push(task);
+      this.addTaskToList(task);
+    });
+  }
+
+  showPopup(popup) {
+    popup.classList.add("show");
+  }
 }
 
-
-// Load tasks on page load
-loadTasks();
+document.addEventListener("DOMContentLoaded", () => {
+  const taskManager = new TaskManager();
+});
