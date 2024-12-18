@@ -1,15 +1,17 @@
+//used ot check for task completion
 class Task {
   constructor(text, completed = false) {
     this.text = text;
     this.completed = completed;
   }
-
+// toggle task completion
   toggleCompletion() {
     this.completed = !this.completed;
   }
 }
-
+// manage tasks and their display using a list
 class TaskManager {
+  //constructor to initialize task list
   constructor() {
     this.tasks = [];
     this.taskListElement = document.getElementById("taskList");
@@ -20,13 +22,13 @@ class TaskManager {
     this.deletePopUp = document.getElementById("deletePopUp");
     this.updatePopUp = document.getElementById("updatePopUp");
     this.completePopUp = document.getElementById("completePopUp");
-    this.clearPopUp = document.getElementById("clearPopUp"); // Added clearPopUp
+    this.clearPopUp = document.getElementById("clearPopUp");
 
     this.loadTasks();
     this.addButton.addEventListener("click", () => this.addTask());
     this.clearButton.addEventListener("click", () => this.clearTasks());
   }
-
+//add task function
   addTask() {
     const taskText = this.newTaskInput.value;
     if (taskText !== "") {
@@ -39,7 +41,7 @@ class TaskManager {
       this.saveTasks();
     }
   }
-
+// add task to list
   addTaskToList(task) {
     const listItem = document.createElement("li");
 
@@ -97,12 +99,12 @@ class TaskManager {
 
     this.taskListElement.appendChild(listItem);
   }
-
+// update task style for completion
   updateTaskStyle(taskSpan, isCompleted) {
     taskSpan.style.color = isCompleted ? "#118B50" : "#7D0A0A";
     taskSpan.style.textDecoration = isCompleted ? "line-through" : "none";
   }
-
+// delete task function
   deleteTask(task, listItem) {
     this.tasks = this.tasks.filter((t) => t !== task);
     listItem.remove();
@@ -110,7 +112,7 @@ class TaskManager {
     setTimeout(() => this.deletePopUp.classList.remove("show"), 2000);
     this.saveTasks();
   }
-
+// update task function
   updateTask(task, taskSpan, updateButton, listItem) {
     if (updateButton.innerText === "Update") {
       const inputField = document.createElement("input");
@@ -118,16 +120,15 @@ class TaskManager {
       inputField.value = taskSpan.innerText;
       listItem.insertBefore(inputField, taskSpan);
       listItem.removeChild(taskSpan);
-
+// Save button logic
       const saveButton = document.createElement("button");
       saveButton.innerText = "Save";
       saveButton.setAttribute("id", "saveButton");
       listItem.appendChild(saveButton);
       updateButton.style.display = "none";
-
+// Save button event listener
       saveButton.addEventListener("click", () => {
         if (inputField.value !== "") {
-          // Fixed taskSpan.innerText = inputField.value;
           task.text = inputField.value; // Update task text
           listItem.insertBefore(taskSpan, inputField);
           listItem.removeChild(inputField);
@@ -140,7 +141,7 @@ class TaskManager {
       });
     }
   }
-
+// clear task function
   clearTasks() {
     this.tasks = [];
     this.taskListElement.innerHTML = ""; // Clear the task list
@@ -148,11 +149,11 @@ class TaskManager {
     setTimeout(() => this.clearPopUp.classList.remove("show"), 2000);
     this.saveTasks();
   }
-
+// save tasks in local storage
   saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(this.tasks));
   }
-
+// load tasks from local storage
   loadTasks() {
     const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
     savedTasks.forEach((taskData) => {
@@ -161,12 +162,12 @@ class TaskManager {
       this.addTaskToList(task);
     });
   }
-
+// show popup function
   showPopup(popup) {
     popup.classList.add("show");
   }
 }
-
+//ensure the code runs after the DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   const taskManager = new TaskManager();
 });
